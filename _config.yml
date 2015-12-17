@@ -1,0 +1,12 @@
+# Site settings
+title: George Kinsman
+email: george@georgekinsman.com
+description: > # this means to ignore newlines until "baseurl:"
+  Welcome to my programming blog, where I post about interesting things I come across or work on.
+baseurl: "" # the subpath of your site, e.g. /blog/
+url: "http://www.georgekinsman.com" # the base hostname & protocol for your site
+twitter_username: GeorgeKinsman
+github_username:  gkinsman
+
+# Build settings
+markdown: kramdown
