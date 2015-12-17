@@ -57,7 +57,7 @@ We need a way to undo a previous move to choose another one, or else we'll be st
 
 ## Maybe we don't want to change the grid after all...
 
-An alternative implementation of could, instead of mutating the grid, take a copy of it each time and pop the bubble group in the copy. If we stored each grid as a node in a tree then we could search the tree to find the leaf with the highest total score. This sounds like progress!
+An alternative implementation could, instead of mutating the grid, take a copy of it each time and pop the bubble group in the copy. If we stored each grid as a node in a tree then we could search the tree to find the leaf with the highest total score. This sounds like progress!
 
 How many grids are we going to be storing though? How much memory is that going to use?
 
