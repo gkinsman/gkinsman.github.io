@@ -2,8 +2,10 @@
 layout: post
 published: draft
 title: >
-     Bubble Burst #1
+     Bubble Burst #1 - Implementation
 category: Programming
+excerpt: >
+    Bubble Burst is an interesting and (somewhat) fun game that's available in most app stores in some form or other.  It looks something like this (this particular game is called bubble poke on android)
 ---
 
 Bubble Burst is an interesting and (somewhat) fun game that's available in most app stores in some form or other.  It looks something like this (this particular game is called bubble poke on android):
@@ -193,3 +195,9 @@ From this we can draw a couple of conclusions:
 That's it for now! In part two of this blog series we'll take a look at some more interesting heuristics involving a priority tree search, as well as an optimisation to reduce the memory usage of the tree nodes.
 
 Note: I'll be releasing all the code for this after part 2, but if you have ideas for heuristics using the above model, send me a Gist and I'll plug it in.
+
+
+----------
+
+<p></p>
+Part Two can be found [here](http://georgekinsman.com/programming/2016/01/10/Bubble-Burst-Part-2.html)

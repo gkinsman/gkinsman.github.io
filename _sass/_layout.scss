@@ -188,7 +188,10 @@
     font-size: 24px;
 }
 
-
+.read-more {
+    margin: 10px 0;
+    display: inline-block;
+}
 
 /**
  * Posts
@@ -212,6 +215,7 @@
 
     h2 {
         font-size: 32px;
+        margin-top: 40px;
 
         @include media-query($on-laptop) {
             font-size: 28px;
@@ -220,6 +224,7 @@
 
     h3 {
         font-size: 26px;
+        margin-top: 30px;
 
         @include media-query($on-laptop) {
             font-size: 22px;
@@ -228,6 +233,7 @@
 
     h4 {
         font-size: 20px;
+        margin-top: 30px;
 
         @include media-query($on-laptop) {
             font-size: 18px;
