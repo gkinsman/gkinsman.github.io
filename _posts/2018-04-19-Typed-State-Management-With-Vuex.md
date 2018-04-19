@@ -62,7 +62,7 @@ Once we have the root state defined, we can define each module. Firstly there's 
 
 */store/ProductsModule.ts*
 
-```ts
+{% highlight typescript %}
 export interface ProductsState {
     all: Product[];
 }
@@ -74,13 +74,13 @@ const initialState: ProductsState = {
 export const products {
     // our API will be exported here
 }
-```
+{% endhighlight %}
 
 We can now add the special sauce that is `vuex-typex`. This code uses the library helper `getStoreBuilder` to define a module with the namespace `products` whose root state is `RootState`, initialised with the the `initialState` from above. We'll use this builder to define getters, mutations and actions. The role of this builder is to capture the context of the store so that call sites can call store methods without needing to pass in the store context. We'll see this in action soon.
 
-```typescript
+{% highlight typescript %}
 const builder = getStoreBuilder<RootState>().module('products', initialState);
-```
+{% endhighlight %}
 
 ### Getters
 
@@ -88,7 +88,7 @@ Using the builder, we can now define a getter that fetches a property from the s
 
 */store/ProductsModule.ts*
 
-```typescript
+{% highlight typescript %}
 const allProductsGetter = builder.read(function allProducts(state: ProductsState) { 
     return state.all; 
 });
@@ -96,7 +96,7 @@ const allProductsGetter = builder.read(function allProducts(state: ProductsState
 export const products {
     get allProducts() { return allProductsGetter(); },
 }
-```
+{% endhighlight %}
 
 The biggest drawback of this approach is that since builder is capturing the context, it uses the name of the function parameter as the store's getter name: `allProducts`. This drawback only applies to getters as we'll see next.
 
@@ -106,7 +106,7 @@ Mutations are functions, and are captured using the builders `commit` function:
 
 */store/ProductsModule.ts*
 
-```typescript
+{% highlight typescript %}
 function decrementProductInventory(state: ProductsState, id: number) {
     const product = state.all.find(p => p.id === id);
     product!.inventory--;
@@ -116,7 +116,7 @@ export const products {
     ...
     decrementProductInventory: builder.commit(decrementProductInventory),
 }
-```
+{% endhighlight %}
 
 
 
@@ -126,7 +126,7 @@ Actions look very similar to functions, except that they may be asynchronous, an
 
 */store/ProductsModule.ts*
 
-```typescript
+{% highlight typescript %}
 /* BareActionContext here gives us access to other modules' state if we need it - also only possible with actions */
 async function getAllProducts(context: BareActionContext<ProductsState, RootState>) {
     const shopProducts = await getProducts();
@@ -137,7 +137,7 @@ export const products {
     ...
     getAllProducts: builder.dispatch(getAllProducts),
 }
-```
+{% endhighlight %}
 
 
 
@@ -145,7 +145,7 @@ export const products {
 
 Using this store API is straightforward: we can import the exported `products` object directly and access it:
 
-```typescript
+{% highlight typescript %}
 ...
 import { products } from '@/store/ProductsModule';
 ...
@@ -161,7 +161,7 @@ export default class ProductList extends Vue {
     await products.getAllProducts();
   }
 }
-```
+{% endhighlight %}
 
 It works great with the dev tools too, you can see that the cart and product modules are correctly namespaced, and time travel works for each commit to the store:
 
