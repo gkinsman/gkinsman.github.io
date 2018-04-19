@@ -23,7 +23,7 @@ Vuex alone isn't very type-friendly, as it wasn't built from the ground up with 
 
 
 
-*The full source code for this post can be found here: https://github.com/gkinsman/vue-types-demo.*
+*The full source code for this post can be found here: [https://github.com/gkinsman/vue-types-demo](https://github.com/gkinsman/vue-types-demo).*
 
 
 
@@ -41,7 +41,7 @@ The next step is to define an interface that represents the root of the state tr
 
 */store/index.ts*
 
-```ts
+{% highlight typescript %}
 import Vue from 'vue';
 import Vuex from 'vuex';
 import { getStoreBuilder } from 'vuex-typex';
@@ -56,7 +56,7 @@ export interface RootState {
 
 const store = getStoreBuilder<RootState>().vuexStore();
 export default store;
-```
+{% endhighlight %}
 
 Once we have the root state defined, we can define each module. Firstly there's the state interface and it's initial state:
 
