@@ -27,7 +27,7 @@ Vuex alone isn't very type-friendly, as it wasn't built from the ground up with 
 
 
 
-For these code samples, I'm porting the Vuex shopping cart example over to TypeScript and vuex-typex. The original JS implementation can be found [here.](https://github.com/vuejs/vuex/tree/dev/examples/shopping-cart.) I have made only minor model changes for ergonomics.
+For these code samples, I'm porting the Vuex shopping cart example over to TypeScript and vuex-typex. The original JS implementation can be found [here.](https://github.com/vuejs/vuex/tree/dev/examples/shopping-cart) I have made only minor model changes for ergonomics.
 
 ### Getting Started
 
