@@ -27,7 +27,7 @@ Vuex alone isn't very type-friendly, as it wasn't built from the ground up with 
 
 
 
-For these code samples, I'm porting the Vuex shopping cart example over to TypeScript and vuex-typex. The original JS implementation can be found here: https://github.com/vuejs/vuex/tree/dev/examples/shopping-cart.] I have made only minor model changes for ergonomics.
+For these code samples, I'm porting the Vuex shopping cart example over to TypeScript and vuex-typex. The original JS implementation can be found [here.](https://github.com/vuejs/vuex/tree/dev/examples/shopping-cart.) I have made only minor model changes for ergonomics.
 
 ### Getting Started
 
@@ -76,7 +76,7 @@ export const products {
 }
 {% endhighlight %}
 
-We can now add the special sauce that is `vuex-typex`. This code uses the library helper `getStoreBuilder` to define a module with the namespace `products` whose root state is `RootState`, initialised with the the `initialState` from above. We'll use this builder to define getters, mutations and actions. The role of this builder is to capture the context of the store so that call sites can call store methods without needing to pass in the store context. We'll see this in action soon.
+We can now add the special sauce that is `vuex-typex`. This code uses the library helper `getStoreBuilder` to define a module with the namespace `products` whose root state is `RootState`, initialised with the `initialState` from above. We'll use this builder to define getters, mutations and actions. The role of this builder is to capture the context of the store so that call sites can call store methods without needing to pass in the store context. We'll see this in action soon.
 
 {% highlight typescript %}
 const builder = getStoreBuilder<RootState>().module('products', initialState);
