@@ -89,6 +89,8 @@ Using the builder, we can now define a getter that fetches a property from the s
 */store/ProductsModule.ts*
 
 {% highlight typescript %}
+
+// This read function uses the name of the function passed in as the name of the store getter.
 const allProductsGetter = builder.read(function allProducts(state: ProductsState) { 
     return state.all; 
 });
