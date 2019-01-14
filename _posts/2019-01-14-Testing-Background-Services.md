@@ -10,7 +10,7 @@ excerpt:
 
 A common use case for for .NET Core 2.1's `BackgroundService` (or its IHostedService interface) is to run a loop that waits for some work to do, and then sleeps for a little while. It might look something like this, using a contrived example of incrementing numbers:
 
-```csharp
+{% highlight csharp %}
 public class MyBackgroundService : BackgroundService {
     public MyBackgroundService(List<int> workToDo) {
         _workToDo = workToDo;
@@ -24,7 +24,7 @@ public class MyBackgroundService : BackgroundService {
         }
     }
 }
-```
+{% endhighlight %}
 
 While complex work should usually be kept somewhere else outside of the loop, it's possible that things might get hairy enough that some tests might help us out.
 
@@ -35,7 +35,7 @@ This presents a problem, as there's no way to control when the loop continues. I
 The .NET Framework has a synchronisation primitive called `AutoResetEvent` that can act as a handle on a loop. Instead of calling `await Task.Delay(TimeSpan)`, we can call `_autoResetEvent.WaitOne()`, which then allows us to decide when to continue the loop by calling `_autoResetEvent.Set()`:
 
 
-```csharp
+{% highlight csharp %}
 _autoResetEvent = new AutoResetEvent(initialState: false);
 protected override async Task ExecuteAsync(CancellationToken stoppingToken) {
     while(!stoppingToken.IsCancellationRequested) {
@@ -48,20 +48,20 @@ protected override async Task ExecuteAsync(CancellationToken stoppingToken) {
 
 // some other thread
 _autoResetEvent.Set();
-```
+{% endhighlight %}
 
 This could be useful for our tests, but first lets put it behind an interface so we can switch the behaviour and make it a bit nicer.
 
-```csharp
+{% highlight csharp %}
 public interface IResetAwaiter
 {
     Task Wait(TimeSpan duration, CancellationToken token = default(CancellationToken));
 }
-```
+{% endhighlight %}
 
 Next lets implement a timed version that will run for reals with `Task.Delay`:
 
-```csharp
+{% highlight csharp %}
 public class TimedResetAwaiter : IResetAwaiter
 {
     public Task Wait(TimeSpan duration, CancellationToken token)
@@ -69,14 +69,14 @@ public class TimedResetAwaiter : IResetAwaiter
         return Task.Delay(duration, token);
     }
 }
-```
+{% endhighlight %}
 
  And then a version that we'll use for testing that allows us to `await` until
 
     a) the test calls `Progress()` to allow the loop to continue, and
     b) the service continues execution until it hits the wait task again
 
-```csharp
+{% highlight csharp %}
 public class ManualResetAwaiter : IResetAwaiter
 {
     private readonly AutoResetEvent _manualResetEvent;
@@ -101,10 +101,10 @@ public class ManualResetAwaiter : IResetAwaiter
         return _waitTask.Task.TimeoutAfter(TimeSpan.FromSeconds(5));
     }
 }
-```
+{% endhighlight %}
 
 `TimeoutAfter` is a a helpful little extension method that times out after waiting for the loop to complete instead of running forever:
-```csharp
+{% highlight csharp %}
 public static class TaskExtensions
 {
     public static async Task<bool> TimeoutAfter(this Task task, TimeSpan duration)
@@ -114,11 +114,11 @@ public static class TaskExtensions
         return winningTask == task;
     }
 }
-```
+{% endhighlight %}
 
 We can now update our worker implementation to use this new abstraction:
 
-```csharp
+{% highlight csharp %}
 public MyBackgroundService(List<int> workToDo, IResetAwaiter resetAwaiter) { 
     // set locals 
 }
@@ -131,7 +131,7 @@ protected async Task ExecuteAsync(CancellationToken stoppingToken)
         await _resetAwaiter.Wait(TimeSpan.FromMinutes(1), stoppingToken);
     }
 }
-```
+{% endhighlight %}
 
 At runtime, a TimedResetAwaiter can be passed in as a constructor argument via DI or `new`, and for testing we can pass in a ManualResetAwaiter that gives us control over the loop operation.
 
@@ -139,7 +139,7 @@ At runtime, a TimedResetAwaiter can be passed in as a constructor argument via D
 
 And now we can write a test that looks like this:
 
-```csharp
+{% highlight csharp %}
 [Fact]
 public async Task MyBackgroundService_WhenLooping_ShouldBeUnderMyControl()
 {
@@ -157,7 +157,7 @@ public async Task MyBackgroundService_WhenLooping_ShouldBeUnderMyControl()
     Assert.True(await awaiter.Progress());
     Assert.Equal(new List<int>() { 1, 2, 3}, work);
 }
-```
+{% endhighlight %}
 
 
 ## Conclusion
