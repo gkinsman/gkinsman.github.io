@@ -30,7 +30,7 @@ While complex work should usually be kept somewhere else outside of the loop, it
 
 This presents a problem, as there's no way to control when the loop continues. It might be possible to control the wait duration, but that could lead to unpredictable tests. What we really want is a way to control when the loop continues from the outside.
 
-## Enter `AutoResetEvent`
+## Enter AutoResetEvent
 
 The .NET Framework has a synchronisation primitive called `AutoResetEvent` that can act as a handle on a loop. Instead of calling `await Task.Delay(TimeSpan)`, we can call `_autoResetEvent.WaitOne()`, which then allows us to decide when to continue the loop by calling `_autoResetEvent.Set()`:
 
@@ -73,8 +73,8 @@ public class TimedResetAwaiter : IResetAwaiter
 
  And then a version that we'll use for testing that allows us to `await` until
 
-    a) the test calls `Progress()` to allow the loop to continue, and
-    b) the service continues execution until it hits the wait task again
+1. the test calls `Progress()` to allow the loop to continue, and
+2. the service continues execution until it hits the wait task again
 
 {% highlight csharp %}
 public class ManualResetAwaiter : IResetAwaiter
