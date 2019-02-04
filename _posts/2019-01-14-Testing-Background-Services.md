@@ -89,8 +89,8 @@ public class ManualResetAwaiter : IResetAwaiter
 
     public Task Wait(TimeSpan duration, CancellationToken token)
     {
-        _waitTask?.SetResult(true);
         _manualResetEvent.WaitOne(duration);
+        _waitTask?.SetResult(true);
         return Task.FromResult(true);
     }
 
