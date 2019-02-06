@@ -8,6 +8,9 @@ excerpt:
    A common use case for for .NET Core 2.1's `BackgroundService` (or its IHostedService interface) is to run a loop that waits for some work to do, and then sleeps for a little while. Testing them can be a slight challenge, however.
 ---
 
+### Updates:
+- 6 Feb 2019 - Fixed a bug with ManualResetAwaiter in which it wouldn't accurately wait for loops to wrap around. I've reworked it slightly to reduce the number of cases it needs to handle.
+
 A common use case for for .NET Core 2.1's `BackgroundService` (or its IHostedService interface) is to run a loop that waits for some work to do, and then sleeps for a little while. It might look something like this, using a contrived example of incrementing numbers:
 
 {% highlight csharp %}
@@ -71,48 +74,40 @@ public class TimedResetAwaiter : IResetAwaiter
 }
 {% endhighlight %}
 
- And then a version that we'll use for testing that allows us to `await` until
-
-1. the test calls `Progress()` to allow the loop to continue, and
-2. the service continues execution until it hits the wait task again
+ And then a version that we'll use for testing that allows us to `await` until the service continues execution and reaches the `Wait` call again. The `Progress(TimeSpan)` method will return false if the work doesn't complete before the timeout, which we can assert on. 
 
 {% highlight csharp %}
-public class ManualResetAwaiter : IResetAwaiter
-{
-    private readonly AutoResetEvent _manualResetEvent;
-    private TaskCompletionSource<bool> _waitTask;
+public class ManualResetAwaiter : IResetAwaiter {
+	AutoResetEvent _resetEvent;
+	SemaphoreSlim _waitEvent;
+	TaskCompletionSource<bool> _firstHit;
+	
+	public ManualResetAwaiter()
+	{
+		_resetEvent = new AutoResetEvent(false);
+		_waitEvent = new SemaphoreSlim(1);
+		_firstHit = new TaskCompletionSource<bool>();
+	}
 
-    public ManualResetAwaiter()
-    {
-        _manualResetEvent = new AutoResetEvent(false);
-    }
+	public async Task<bool> Progress(TimeSpan timeout)
+	{
+		_resetEvent.Set();
+		return await _waitEvent.WaitAsync(timeout);
+	}
 
-    public Task Wait(TimeSpan duration, CancellationToken token)
-    {
-        _manualResetEvent.WaitOne(duration);
-        _waitTask?.SetResult(true);
-        return Task.FromResult(true);
-    }
+	public Task Wait(TimeSpan duration, CancellationToken token)
+	{
+		if(_firstHit.Task.IsCompleted) _waitEvent.Release();
+		if(!_firstHit.Task.IsCompleted) _firstHit.SetResult(true);
+		_resetEvent.WaitOne();
+		return Task.CompletedTask;
+	}
 
-    public Task<bool> Progress()
-    {
-        _waitTask = new TaskCompletionSource<bool>();
-        _manualResetEvent.Set();
-        return _waitTask.Task.TimeoutAfter(TimeSpan.FromSeconds(5));
-    }
-}
-{% endhighlight %}
-
-`TimeoutAfter` is a a helpful little extension method that times out after waiting for the loop to complete instead of running forever:
-{% highlight csharp %}
-public static class TaskExtensions
-{
-    public static async Task<bool> TimeoutAfter(this Task task, TimeSpan duration)
-    {
-        var timeout = Task.Delay(duration);
-        var winningTask = await Task.WhenAny(timeout, task);
-        return winningTask == task;
-    }
+	public async Task WaitFirstTime()
+	{
+		await _waitEvent.WaitAsync();
+		await _firstHit.Task;
+	}
 }
 {% endhighlight %}
 
@@ -149,11 +144,18 @@ public async Task MyBackgroundService_WhenLooping_ShouldBeUnderMyControl()
 
     await backgroundService.StartAsync();
 
+    // Wait until the service starts up and hits the Wait call the first time
+    await awaiter.WaitFirstTime();
+
+    // Continue execution and wait until Wait is hit again 
+    Assert.True(await awaiter.Progress());
     Assert.Equal(new List<int>() { 1 }, work);
     
+    // And again...
     Assert.True(await awaiter.Progress());
     Assert.Equal(new List<int>() { 1, 2 }, work);
 
+    // And again...
     Assert.True(await awaiter.Progress());
     Assert.Equal(new List<int>() { 1, 2, 3}, work);
 }
@@ -165,3 +167,4 @@ public async Task MyBackgroundService_WhenLooping_ShouldBeUnderMyControl()
 This technique can be useful for controlling any loop that depends on waiting between periods of work. 
 
 Pulling out the wait to its own abstraction means that you could also substitute more advanced wait strategies without affecting the accompanying tests.
+
