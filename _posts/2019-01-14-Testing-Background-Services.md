@@ -9,9 +9,9 @@ excerpt:
 ---
 
 
-##### Updates:
-<sub><sup>6 Feb 2019 - Fixed a bug with ManualResetAwaiter in which it wouldn't accurately wait for loops to wrap around. I've reworked it slightly to reduce the number of cases it needs to handle.
-</sup></sub>
+<pre><sub><sup>Updates:
+- 6 Feb 2019 - Fixed a bug with ManualResetAwaiter in which it wouldn't accurately wait for loops to wrap around. I've reworked it slightly to reduce the number of cases it needs to handle.
+</sup></sub></pre>
 
 A common use case for for .NET Core 2.1's `BackgroundService` (or its IHostedService interface) is to run a loop that waits for some work to do, and then sleeps for a little while. It might look something like this, using a contrived example of incrementing numbers:
 
