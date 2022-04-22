@@ -104,15 +104,19 @@ try {
 {% endhighlight %}
 
 {:start="7"}
-7. So now let's add `TestName` and `TestClass` to the enricher, and wrap the test execution in a `SerilogTimings` operation so that we can keep track of our test durations over time.
+7. So now let's add `TestName` and `TestClass` to the enricher, and wrap the test execution in a `SerilogTimings` operation so that we can keep track of our test durations over time, and ensure that failed tests appear as errors in the logs.
 
 {% highlight csharp %}
 foreach(var test in testClass.Tests) {
     mapEnricher.Set("TestName", test.Name);
     mapEnricher.Set("TestClass", testClass.Type.Name);
-    using (Operation.Time("Executing test {TestName}", test.Name)) {
-        await test.Run(instance);
-    }
+    using var op =
+        Operation.At(LogEventLevel.Information, LogEventLevel.Error)
+            .Begin("Executing test {TestName}", test.Name);
+
+    var result = await test.Run(instance);
+    if (result is Failed failure) op.Abandon(failure.Reason);
+    else op.Complete();
 }
 {% endhighlight %}
 
@@ -134,4 +138,7 @@ The ability to slice and dice the entire log output of your app by TestName/Test
 
 ![](/images/seq-logs-fixie-testrun.png)
 
+![](/images/seq-fixie-failure-recording.png)
+
 ![](/images/seq-fixie-logs-dash.png)
+
