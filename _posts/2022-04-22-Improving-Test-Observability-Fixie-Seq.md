@@ -49,7 +49,7 @@ public class AppTestProject : ITestProject
 
 ### Execution
 
-So let's now walk through the code of the custom execution bit by bit - the whole app can be found [here](https://github.com/gkinsman/SeqFixieSample).
+So let's now walk through the code of the custom execution bit by bit - the whole app can be found [here](https://github.com/gkinsman/SeqFixieSample), and the code for this section is [here](https://github.com/gkinsman/SeqFixieSample/blob/master/test/SeqFixieSample.FixieTests/FixieTestProject.cs#L18).
 
 1. Implement `IExecution` which gives us the discovered `TestSuite`, and we give Fixie a Task back to execute.
 
