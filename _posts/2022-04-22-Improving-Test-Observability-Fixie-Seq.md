@@ -4,7 +4,7 @@ published: draft
 title: >
   Improving Test Observability with Fixie+Seq
 category: Programming
-excerpt: For years now it's been possible to forward logs from Serilog to xUnit's `ITestOutputHelper`, but in doing so we lose the structure that makes structured logs great. How can we get the best of both worlds - the advantages of `ITestOutputHelper` and the analysis capabilities of a local structured log viewer like [Seq](https://datalust.co/)?
+excerpt: For years now it's been possible to forward logs from Serilog to xUnit's `ITestOutputHelper`, but in doing so we lose the structure that makes structured logs great. How can we get the best of both worlds - the advantages of `ITestOutputHelper` and the analysis capabilities of a local structured log viewer like Seq?
 ---
 
 For years now it's been possible to forward logs from Serilog to xUnit's `ITestOutputHelper`, but in doing so we lose the structure that makes structured logs great. How can we get the best of both worlds - the advantages of `ITestOutputHelper` and the analysis capabilities of a local structured log viewer like [Seq](https://datalust.co/)?
