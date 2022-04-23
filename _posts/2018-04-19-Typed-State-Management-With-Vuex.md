@@ -8,6 +8,7 @@ excerpt:
    In this post I'd like to demonstrate a pattern I've encountered for doing type-safe, low-overhead state management with Vuex.
 ---
 
+_Update April 2022: Now that Vue 3 has been released, I'd recommend checking out [Pinia](https://pinia.vuejs.org/) which is a type-safe, modular store for Vue 2/3 with all the advantages of Vuex and fewer drawbacks._
 
 
 In this post I'd like to demonstrate a pattern I've encountered for doing type-safe, low-overhead state management with Vuex. Vuex is the default, first class state management library for Vue.js. It allows developers to define a state tree that provides getters into the tree, synchronous mutations of the tree, and asynchronous actions that allow multiple mutations. Before looking at those however,
