@@ -8,10 +8,12 @@ excerpt:
    A common use case for for .NET Core 2.1's `BackgroundService` (or its IHostedService interface) is to run a loop that waits for some work to do, and then sleeps for a little while. Testing them can be a slight challenge, however.
 ---
 
+Updates:
 
-<pre><sub><sup>Updates:
-- 6 Feb 2019 - Fixed a bug with ManualResetAwaiter in which it wouldn't accurately wait for loops to wrap around. I've reworked it slightly to reduce the number of cases it needs to handle.
-</sup></sub></pre>
+-  April 2022: I no longer recommend this as a good way to test background services due to its complexity and invasiveness. These days I recommend waiting for side effects to occur from the outside. I'm leaving this post up as a record of what I did do at one point. Thanks for reading! 
+
+- February 2019 - Fixed a bug with ManualResetAwaiter in which it wouldn't accurately wait for loops to wrap around. I've reworked it slightly to reduce the number of cases it needs to handle.
+
 
 A common use case for for .NET Core 2.1's `BackgroundService` (or its IHostedService interface) is to run a loop that waits for some work to do, and then sleeps for a little while. It might look something like this, using a contrived example of incrementing numbers:
 
